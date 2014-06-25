@@ -1,10 +1,10 @@
 var through = require('through2');
 
-module.exports = function(streams) {
+module.exports = function() {
   var ended = false;
   var st = through();
 
-  streams = (streams || []).concat();
+  streams = Array.prototype.slice.apply(arguments);
 
   st.add = function(stream) {
     if (ended) throw new Error('SeqStream is already ended');

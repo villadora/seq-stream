@@ -1,6 +1,6 @@
 {
   "name": "seq-stream",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cancat a sequnce of stream",
   "main": "index.js",
   "scripts": {
@@ -25,8 +25,8 @@
     "url": "https://github.com/villadora/seq-stream/issues"
   },
   "devDependencies": {
-    "mocha": "*",
-    "chai": "*"
+    "mocha": "^1.20.1",
+    "chai": "^1.9.1"
   },
   "dependencies": {
     "chai": "^1.9.1",

@@ -1,7 +1,7 @@
 {
   "name": "seq-stream",
   "version": "0.1.0",
-  "description": "Cancat a sequnce of stream",
+  "description": "Read an array of stream by sequence",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha -R spec test"

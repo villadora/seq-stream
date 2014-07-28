@@ -21,7 +21,6 @@ var stream = seq(stream1, fs.createReadStream('./data'));
 // will pipe to stdout in the order of content in 'straem1', content in './data'
 stream.pipe(process.stdout);
 
-
 ```
 
 ## Licence

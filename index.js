@@ -5,23 +5,33 @@ var assert = require('assert');
 util.inherits(SeqStream, Readable);
 
 function SeqStream(streams) {
+  Readable.call(this);
+
   this.streams = util.isArray(streams) ? streams : Array.prototype.slice.apply(arguments);
-  this.idx = 0;
+
+  this.idx = -1;
 }
 
 SeqStream.prototype._read = function(size) {
-  var self = this, st;
-  
-  while(self.idx < self.streams.length && (st = self.streams[self.idx])) {
-    var data = st.read(size);
-    if(data) {
-      return self.push(data);
-    }else {
-      self.idx++;
+  var self = this;
+
+  if (this.idx == -1)
+    next();
+
+  function next(chunk) {
+    if (chunk) {
+      return self.push(chunk);
+    }
+
+    var st;
+    self.idx++;
+    if (self.idx < self.streams.length && (st = self.streams[self.idx])) {
+      st.on('data', next);
+      st.on('end', next);
+    } else {
+      self.push(null);
     }
   }
-
-  self.push(null);
 };
 
 SeqStream.prototype.apppend = function() {
@@ -36,7 +46,6 @@ SeqStream.prototype.insertNext = function() {
 };
 
 
-module.exports = function() {
-  var streams = Array.prototype.slice.apply(arguments);
-  return new SeqStream(streams);
+module.exports = function(streams) {
+  return new SeqStream(util.isArray(streams) ? streams : Array.prototype.slice.apply(arguments));
 };

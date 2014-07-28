@@ -15,19 +15,34 @@ function SeqStream(streams) {
 SeqStream.prototype._read = function(size) {
   var self = this;
 
-  if (this.idx == -1)
+  if (self.idx == -1)
     next();
 
-  function next(chunk) {
-    if (chunk) {
-      return self.push(chunk);
-    }
-
+  function next() {
     var st;
     self.idx++;
     if (self.idx < self.streams.length && (st = self.streams[self.idx])) {
-      st.on('data', next);
-      st.on('end', next);
+      if (st.readable) {
+        var cnt = 0;
+        st.on('readable', function() {
+          var chunk = st.read();
+          if (chunk) {
+            self.push(chunk);
+          } else {
+            st.removeAllListeners();
+            next();
+          }
+        });
+
+        st.once('end', function() {
+          st.removeAllListeners();
+          next();
+        });
+      } else {
+        throw new Error('Unreadable Stream in streams list');
+      }
+      // st.on('data', self.push.bind(self));
+      // st.on('end', next);
     } else {
       self.push(null);
     }
